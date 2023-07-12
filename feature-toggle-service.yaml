@@ -1,0 +1,319 @@
+feature-toggle-service.yaml
+deployment-feature-toggle-service.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"feature-toggle-service"},"name":"feature-toggle-service","namespace":"default"},"spec":{"replicas":3,"selector":{"matchLabels":{"app":"feature-toggle-service"}},"template":{"metadata":{"labels":{"app":"feature-toggle-service"}},"spec":{"containers":[{"image":"221140780542.dkr.ecr.eu-west-2.amazonaws.com/ft/feature-toggle-service:latest","name":"feature-toggle-service","ports":[{"containerPort":8080}]}]}}}}
+  creationTimestamp: "2023-06-30T05:42:18Z"
+  generation: 1
+  labels:
+    app: feature-toggle-service
+  name: feature-toggle-service
+  namespace: default
+  resourceVersion: "58799624"
+  uid: 71bf9783-dd8e-4797-bf04-227380be8701
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: feature-toggle-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: feature-toggle-service
+    spec:
+      containers:
+      - image: 221140780542.dkr.ecr.eu-west-2.amazonaws.com/ft/feature-toggle-service:latest
+        imagePullPolicy: Always
+        name: feature-toggle-service
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 3
+  conditions:
+  - lastTransitionTime: "2023-06-30T05:42:21Z"
+    lastUpdateTime: "2023-06-30T05:42:21Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2023-06-30T05:42:19Z"
+    lastUpdateTime: "2023-06-30T05:42:21Z"
+    message: ReplicaSet "feature-toggle-service-5d5f69cb5" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 3
+  replicas: 3
+  updatedReplicas: 3
+
+
+service-feature-toggle-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"feature-toggle-service","namespace":"default"},"spec":{"ports":[{"port":80,"targetPort":8080}],"selector":{"app":"feature-toggle-service"},"type":"LoadBalancer"}}
+  creationTimestamp: "2023-06-23T07:59:17Z"
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
+  name: feature-toggle-service
+  namespace: default
+  resourceVersion: "58799630"
+  uid: d69beeca-8bb3-48aa-94c7-ef0cc0235e69
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 172.20.1.91
+  clusterIPs:
+  - 172.20.1.91
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 31031
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: feature-toggle-service
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - hostname: ad69beeca8bb348aa94c7ef0cc0235e6-2045986880.eu-west-2.elb.amazonaws.com
+
+    service-kubernetes.yaml
+
+ apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2022-11-18T17:23:21Z"
+  labels:
+    component: apiserver
+    provider: kubernetes
+  name: kubernetes
+  namespace: default
+  resourceVersion: "202"
+  uid: 820bafae-dfac-4800-8b37-524acbf4e2d8
+spec:
+  clusterIP: 172.20.0.1
+  clusterIPs:
+  - 172.20.0.1
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+endpoints-feature-toggle-service.yaml
+
+apiVersion: v1
+kind: Endpoints
+metadata:
+  annotations:
+    endpoints.kubernetes.io/last-change-trigger-time: "2023-06-30T05:42:21Z"
+  creationTimestamp: "2023-06-23T07:59:17Z"
+  name: feature-toggle-service
+  namespace: default
+  resourceVersion: "58799623"
+  uid: 22bb93f7-7afe-4ccd-8901-971b704bb142
+subsets:
+- addresses:
+  - ip: 10.0.3.156
+    nodeName: ip-10-0-3-210.eu-west-2.compute.internal
+    targetRef:
+      kind: Pod
+      name: feature-toggle-service-5d5f69cb5-pkqjq
+      namespace: default
+      resourceVersion: "58799619"
+      uid: aa9ccb62-21e1-4c98-be30-52e374b6f2dc
+  - ip: 10.0.3.231
+    nodeName: ip-10-0-3-210.eu-west-2.compute.internal
+    targetRef:
+      kind: Pod
+      name: feature-toggle-service-5d5f69cb5-kjt9k
+      namespace: default
+      resourceVersion: "58799614"
+      uid: 12b66351-228b-447d-bcdf-60f4c2c50447
+  - ip: 10.0.3.36
+    nodeName: ip-10-0-3-210.eu-west-2.compute.internal
+    targetRef:
+      kind: Pod
+      name: feature-toggle-service-5d5f69cb5-86xl4
+      namespace: default
+      resourceVersion: "58799611"
+      uid: ce358886-7e87-47dd-8394-f009260f78d3
+  ports:
+  - port: 8080
+    protocol: TCP
+
+endpoints-kubernetes.yaml
+
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: "2022-11-18T17:23:21Z"
+  labels:
+    endpointslice.kubernetes.io/skip-mirror: "true"
+  name: kubernetes
+  namespace: default
+  resourceVersion: "57990106"
+  uid: 753278d1-d1db-45ab-ae10-c13aca7622ab
+subsets:
+- addresses:
+  - ip: 10.0.1.89
+  - ip: 10.0.3.56
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+
+pod1-feature-toggle-service.yaml   
+
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubernetes.io/psp: eks.privileged
+  creationTimestamp: "2023-06-30T05:42:19Z"
+  generateName: feature-toggle-service-5d5f69cb5-
+  labels:
+    app: feature-toggle-service
+    pod-template-hash: 5d5f69cb5
+  name: feature-toggle-service-5d5f69cb5-86xl4
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: feature-toggle-service-5d5f69cb5
+    uid: fd18424e-adb0-4ae2-92d4-aa039551ddc1
+  resourceVersion: "58799611"
+  uid: ce358886-7e87-47dd-8394-f009260f78d3
+spec:
+  containers:
+  - image: 221140780542.dkr.ecr.eu-west-2.amazonaws.com/ft/feature-toggle-service:latest
+    imagePullPolicy: Always
+    name: feature-toggle-service
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-gr2v4
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: ip-10-0-3-210.eu-west-2.compute.internal
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-gr2v4
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-06-30T05:42:19Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-06-30T05:42:21Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-06-30T05:42:21Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-06-30T05:42:19Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://55360e7ef4df910b60d8a7b6f88f1ebc32bfaec807d079256c0666c414526cde
+    image: 221140780542.dkr.ecr.eu-west-2.amazonaws.com/ft/feature-toggle-service:latest
+    imageID: docker-pullable://221140780542.dkr.ecr.eu-west-2.amazonaws.com/ft/feature-toggle-service@sha256:f4cd3ae37c8ce6c4ab060a465500e0a9c1d0452040c0561746bfbd207866465e
+    lastState: {}
+    name: feature-toggle-service
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2023-06-30T05:42:20Z"
+  hostIP: 10.0.3.210
+  phase: Running
+  podIP: 10.0.3.36
+  podIPs:
+  - ip: 10.0.3.36
+  qosClass: BestEffort
+  startTime: "2023-06-30T05:42:19Z"
